@@ -19,6 +19,7 @@ defmodule SouboryWeb.Router do
     get "/", FilesController, :index
     get "/files", FilesController, :index
     get "/files/:path", FilesController, :index
+    get "/files/search/:search_query", FilesController, :search
     get "/file/:path", FileController, :show
   end
 

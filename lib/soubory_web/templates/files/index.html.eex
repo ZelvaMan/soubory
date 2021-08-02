@@ -1,54 +1,65 @@
 <%
   alias Soubory.Models.SimpleFile
-  order =    order_method =
+  order =
       if @conn.params["orderby"] != nil do
         String.to_atom(@conn.params["orderby"])
       else
         :type_dec
       end
+  sq = "Program"
+
 %>
 <div class="phx-hero">
-  <h1><b>Ultimate</d> File Explorer</h1>
+  <h1><b>Ultimate</d> <%=link "File", to: Routes.files_path(@conn, :index,  "C:/", orderby: order)%></td>
+      </tr>
+      <%= if true do %> <%=link "Explorer", to:  Routes.files_path(@conn, :search,  sq,
+   path: @path), method: :get  %></h1>
   <%= @path %>
+  <input type="text" id="searchText" onchange="changeHref()">
+
+  <a href="#" id="searchLink">Search</a>
+  <script>
+    function changeHref() {
+      alert("test")
+      let word = document.querySelector('#searchText').value;
+      document.querySelector('#searchLink').href = "http://localhost:4000/files/search/" + word + "?path=" +
+        "<%= @path %>";
+    }
+  </script>
+
   <table>
-   <tr class="black-a">
-   <th><%= link "Type", to: Routes.files_path(@conn, :index,  @path,
+    <tr class="black-a">
+      <th><%= link "Type", to: Routes.files_path(@conn, :index,  @path,
    orderby: if order === :type_dec do :type_inc else :type_dec end) %></th>
-    <th><%= link "Name", to: Routes.files_path(@conn, :index,  @path,
+      <th><%= link "Name", to: Routes.files_path(@conn, :index,  @path,
    orderby: if order === :name_dec do :name_inc else :name_dec end) %></th>
-    <th>Extension</th>
-    <th><%= link "Size", to: Routes.files_path(@conn, :index,  @path,
+      <th>Extension</th>
+      <th><%= link "Size", to: Routes.files_path(@conn, :index,  @path,
    orderby: if order === :size_dec do :size_inc else :size_dec end) %></th>
 
-  </tr>
-  <tr><td><%=link "../", to: Routes.files_path(@conn, :index,  @parent, orderby: order)%></td></tr>
- <%= for file <- @files do %>
-  <tr>
+    </tr>
+    <tr>
+      <td><%=link "../", to: Routes.files_path(@conn, :index,  @parent, orderby: order)%></td>
+    </tr>
+    <%= if true do %>
+    <%= for file <- @files do %>
+    <tr>
 
-  <%= case file.type do %>
-
-  <%= :directory -> %>
-  <td><img src="\images\folder.png" style="max-width:2em;"></td>
-    <td> <%= link file.name, to: Routes.files_path(@conn, :index,  file.fullpath, orderby: order)  %></td>
-    <%# <td><%=  Atom.to_string(file.type)  % ></td> %>
-    <td></td>
-    <td></td>
-    <%= :regular -> %>
-    <td></td>
-    <td class="black-a"><%= link file.name, to: Routes.file_path(@conn, :show,  file.fullpath, orderby: order)  %></td>
-    <%# <td><%=  Atom.to_string(file.type)  % ></td> %>
-    <td><%=  file.extension  %></td>
-    <td><%= if (file.size == 0) do " "else "#{Float.ceil(file.size/1000,1)}kb" end %></td>
-    <%= _ -> %>
-  <% end%>
-  </tr>
-<% end %>
+      <%= render("row.html",conn: @conn,  file: file, order: order) %>
+    </tr>
+    <% end %>
+    <% else %>
+    <tr>
+      <td>No Files
+      <td>
+    </tr>
+    <% end %>
+    <% end %>
   </table>
 </div>
 
 <style>
-.black-a *{
-  color:black;
-}
-
+  .black-a * {
+    color: black;
+  }
 </style>
