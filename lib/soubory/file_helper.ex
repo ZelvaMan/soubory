@@ -2,38 +2,45 @@ defmodule Soubory.FileHelper do
   alias Soubory.Models.SimpleFile
   alias Soubory.Models.FileInfo
 
+  require Logger
+
+  # converts path to SimpleFile struct
+  def path_to_SimpleFile(path) do
+    info_tuple = File.stat(path)
+    file = %SimpleFile{name: Path.basename(path)}
+
+    file =
+      if elem(info_tuple, 0) === :ok do
+        # we were able to get file info
+        info = elem(info_tuple, 1)
+
+        %{
+          file
+          | size:
+              if info.type == :regular do
+                info.size
+              else
+                0
+              end,
+            extension: Path.extname(path),
+            type: info.type,
+            fullpath:
+              if info.type == :directory do
+                path <> "/"
+              else
+                path
+              end
+        }
+      else
+        file
+      end
+
+    file
+  end
+
   def get_infos(path) do
     Enum.map(File.ls!(path), fn x ->
-      info_tuple = File.stat(path <> x)
-      file = %SimpleFile{name: x}
-
-      file =
-        if elem(info_tuple, 0) === :ok do
-          # we were able to get file info
-          info = elem(info_tuple, 1)
-
-          %{
-            file
-            | size:
-                if info.type == :regular do
-                  info.size
-                else
-                  0
-                end,
-              extension: Path.extname(path <> x),
-              type: info.type,
-              fullpath:
-                if info.type == :directory do
-                  path <> x <> "/"
-                else
-                  path <> x
-                end
-          }
-        else
-          file
-        end
-
-      file
+      path_to_SimpleFile(path <> x)
     end)
   end
 
@@ -122,5 +129,20 @@ defmodule Soubory.FileHelper do
       _ ->
         files
     end
+  end
+
+  def search_files(path, search_query) do
+    # get_infos(path)
+    file_names =
+      Enum.filter(File.ls!(path), fn x ->
+        String.contains?(x, search_query)
+      end)
+
+    Enum.map(
+      file_names,
+      fn x ->
+        path_to_SimpleFile(path <> x)
+      end
+    )
   end
 end
