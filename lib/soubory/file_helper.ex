@@ -17,6 +17,8 @@ defmodule Soubory.FileHelper do
             | size:
                 if info.type == :regular do
                   info.size
+                else
+                  0
                 end,
               extension: Path.extname(path <> x),
               type: info.type,
