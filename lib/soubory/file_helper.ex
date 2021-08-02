@@ -3,36 +3,36 @@ defmodule Soubory.FileHelper do
   alias Soubory.Models.FileInfo
 
   def get_infos(path) do
-    files =
-      Enum.map(File.ls!(path), fn x ->
-        info_tuple = File.stat(path <> x)
-        file = %SimpleFile{name: x}
+    Enum.map(File.ls!(path), fn x ->
+      info_tuple = File.stat(path <> x)
+      file = %SimpleFile{name: x}
 
-        file =
-          if elem(info_tuple, 0) === :ok do
-            # we were able to get file info
-            info = elem(info_tuple, 1)
+      file =
+        if elem(info_tuple, 0) === :ok do
+          # we were able to get file info
+          info = elem(info_tuple, 1)
 
-            %{
-              file
-              | size: info.size,
-                extension: Path.extname(path <> x),
-                type: info.type,
-                fullpath:
-                  if info.type == :directory do
-                    path <> x <> "/"
-                  else
-                    path <> x
-                  end
-            }
-          else
+          %{
             file
-          end
+            | size:
+                if info.type == :regular do
+                  info.size
+                end,
+              extension: Path.extname(path <> x),
+              type: info.type,
+              fullpath:
+                if info.type == :directory do
+                  path <> x <> "/"
+                else
+                  path <> x
+                end
+          }
+        else
+          file
+        end
 
-        file
-      end)
-
-    # Enum.sort_by(files, & &1.size)
+      file
+    end)
   end
 
   # return parent directory of path
@@ -58,7 +58,7 @@ defmodule Soubory.FileHelper do
     end
   end
 
-  # orders file infos
+  # orders SimpleFiles
   def order_infos(files, order) do
     case order do
       :type_dec ->
@@ -83,7 +83,7 @@ defmodule Soubory.FileHelper do
       # by alphabet
       :name_dec ->
         Enum.sort(files, fn x, y ->
-          if x.name > y.name do
+          if String.downcase(x.name) > String.downcase(y.name) do
             false
           else
             true
@@ -92,7 +92,7 @@ defmodule Soubory.FileHelper do
 
       :name_inc ->
         Enum.sort(files, fn x, y ->
-          if x.size < y.size do
+          if String.downcase(x.name) < String.downcase(y.name) do
             false
           else
             true
@@ -100,6 +100,15 @@ defmodule Soubory.FileHelper do
         end)
 
       :size_dec ->
+        Enum.sort(files, fn x, y ->
+          if x.size < y.size do
+            false
+          else
+            true
+          end
+        end)
+
+      :size_inc ->
         Enum.sort(files, fn x, y ->
           if x.size > y.size do
             false
