@@ -38,6 +38,7 @@ defmodule Soubory.FileHelper do
     file
   end
 
+  # return infos about files in curent directory
   def get_infos(path) do
     Enum.map(File.ls!(path), fn x ->
       path_to_SimpleFile(path <> x)
@@ -46,8 +47,7 @@ defmodule Soubory.FileHelper do
 
   # return parent directory of path
   def get_parent(path) do
-    s = String.replace(path, Path.basename(path) <> "/", "")
-    String.replace(s, Path.basename(path), "")
+    String.replace(String.replace(path, Path.basename(path) <> "/", ""), Path.basename(path), "")
   end
 
   def get_file_info(path) do
@@ -132,14 +132,10 @@ defmodule Soubory.FileHelper do
   end
 
   def search_files(path, search_query) do
-    # get_infos(path)
-    file_names =
+    Enum.map(
       Enum.filter(File.ls!(path), fn x ->
         String.contains?(x, search_query)
-      end)
-
-    Enum.map(
-      file_names,
+      end),
       fn x ->
         path_to_SimpleFile(path <> x)
       end

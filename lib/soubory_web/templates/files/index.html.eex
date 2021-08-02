@@ -14,18 +14,8 @@
       </tr>
       <%= if true do %> <%=link "Explorer", to:  Routes.files_path(@conn, :search,  sq,
    path: @path), method: :get  %></h1>
-  <%= @path %>
-  <input type="text" id="searchText" onchange="changeHref()">
+  path: <%= @path %>
 
-  <a href="#" id="searchLink">Search</a>
-  <script>
-    function changeHref() {
-      alert("test")
-      let word = document.querySelector('#searchText').value;
-      document.querySelector('#searchLink').href = "http://localhost:4000/files/search/" + word + "?path=" +
-        "<%= @path %>";
-    }
-  </script>
 
   <table>
     <tr class="black-a">
@@ -41,19 +31,13 @@
     <tr>
       <td><%=link "../", to: Routes.files_path(@conn, :index,  @parent, orderby: order)%></td>
     </tr>
-    <%= if true do %>
     <%= for file <- @files do %>
     <tr>
 
       <%= render("row.html",conn: @conn,  file: file, order: order) %>
     </tr>
     <% end %>
-    <% else %>
-    <tr>
-      <td>No Files
-      <td>
-    </tr>
-    <% end %>
+
     <% end %>
   </table>
 </div>
