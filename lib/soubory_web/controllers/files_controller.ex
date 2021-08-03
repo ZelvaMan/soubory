@@ -3,7 +3,7 @@ defmodule SouboryWeb.FilesController do
   alias Soubory.FileHelper
 
   def index(conn, params) do
-    path = params["path"] || "C:/"
+    path = FileHelper.make_path_valid(params["path"] || FileHelper.allowed_path())
 
     file_infos = FileHelper.get_infos(path)
 
@@ -21,7 +21,7 @@ defmodule SouboryWeb.FilesController do
   end
 
   def search(conn, params) do
-    path = params["path"]
+    path = FileHelper.make_path_valid(params["path"] || FileHelper.allowed_path())
     s_q = params["search_query"]
     files = FileHelper.search_files(path, s_q)
 

@@ -141,4 +141,17 @@ defmodule Soubory.FileHelper do
       end
     )
   end
+
+  def make_path_valid(path) do
+    allowed_path = allowed_path()
+
+    case String.contains?(path, allowed_path) do
+      true -> path
+      _ -> allowed_path
+    end
+  end
+
+  def allowed_path() do
+    Application.get_env(:soubory, SouboryWeb.Endpoint)[:path]
+  end
 end

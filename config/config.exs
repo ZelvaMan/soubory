@@ -13,7 +13,8 @@ config :soubory, SouboryWeb.Endpoint,
   secret_key_base: "NJL6GRA/uEramCDHZMGGmDwmKQS9XcDZoe1s1mcZIzKV2m+Fo971O0Xuz9Ggp6Hn",
   render_errors: [view: SouboryWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Soubory.PubSub,
-  live_view: [signing_salt: "rkigmZCf"]
+  live_view: [signing_salt: "rkigmZCf"],
+  path: "C:/TEST/"
 
 # Configures Elixir's Logger
 config :logger, :console,
