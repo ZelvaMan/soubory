@@ -4,9 +4,10 @@ defmodule SouboryWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_root_layout, {SouboryWeb.LayoutView, :root}
   end
 
   pipeline :api do
@@ -21,6 +22,7 @@ defmodule SouboryWeb.Router do
     get "/files/:path", FilesController, :index
     get "/files/search/:search_query", FilesController, :search
     get "/file/:path", FileController, :show
+    live "/liveview", FilesLive
   end
 
   # Other scopes may use custom stacks.
