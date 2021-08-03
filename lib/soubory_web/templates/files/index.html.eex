@@ -9,12 +9,24 @@
   sq = "Program"
 
 %>
+<script>
+  function redirect() {
+    let sq = document.getElementById("text_input").value
+    window.location.href = "/files/search/" + sq + "?path=<%= @path%>"
+  }
+</script>
 <div class="phx-hero">
   <h1><b>Ultimate</d> <%=link "File", to: Routes.files_path(@conn, :index,  "C:/", orderby: order)%></td>
       </tr>
       <%= if true do %> <%=link "Explorer", to:  Routes.files_path(@conn, :search,  sq,
    path: @path), method: :get  %></h1>
   path: <%= @path %>
+
+  <div>
+    <input type="text" id="text_input" value="search">
+    <button onClick="redirect()">Edit</button>
+
+  </div>
 
 
   <table>
