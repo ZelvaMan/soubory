@@ -41,7 +41,9 @@ defmodule Soubory.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:phoenix_live_view, "~> 0.15.7"},
+      {:floki, ">= 0.30.0", only: :test}
     ]
   end
 
@@ -53,7 +55,9 @@ defmodule Soubory.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get"]
+      setup: ["assets.setup", "assets.build", "deps.get"],
+      "assets.setup": ["cmd --cd assets npm i"],
+      "assets.build": ["cmd --cd assets npm run deploy"]
     ]
   end
 end

@@ -11,7 +11,14 @@ config :soubory, SouboryWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
+  watchers: [
+    node: [
+      "node_modules/rollup/dist/bin/rollup",
+      "--config",
+      "--watch",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+  ]
 
 # ## SSL Support
 #
